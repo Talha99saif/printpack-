@@ -1,0 +1,13 @@
+# Manual acceptance checklist
+- [ ] Register customer; reject malformed email and passwords shorter than 8 chars.
+- [ ] Register vendor; verify vendor cannot sign in until admin approval.
+- [ ] Promote first admin using README SQL; approve/reject vendor application.
+- [ ] Add a service as vendor; confirm it appears in search/category results.
+- [ ] Search by service keyword and filter by category / sort price.
+- [ ] Add two services from different vendors to cart and checkout using COD.
+- [ ] Confirm checkout creates separate vendor orders and item rows.
+- [ ] Upload allowed PDF/JPG/PNG/WEBP under 15 MB; reject other types/oversized files.
+- [ ] Update order through accepted → processing → dispatched → delivered; confirm notification.
+- [ ] Verify customer cannot access vendor/admin routes; vendor cannot edit another vendor's order.
+- [ ] Test on phone-width viewport and keyboard-only navigation.
+- [ ] For production, add tests for CSRF, rate limits, upload scanning, webhook idempotency, and concurrent checkout.

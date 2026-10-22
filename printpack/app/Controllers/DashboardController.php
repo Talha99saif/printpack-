@@ -1,0 +1,9 @@
+<?php
+declare(strict_types=1);
+namespace App\Controllers;
+final class DashboardController {
+    public function customer(): void {$u=require_role('customer');$s=db()->prepare('SELECT COUNT(*) FROM orders WHERE customer_id=?');$s->execute([$u['id']]);$orderCount=(int)$s->fetchColumn();$s=db()->prepare('SELECT * FROM notifications WHERE user_id=? ORDER BY created_at DESC LIMIT 5');$s->execute([$u['id']]);$notifications=$s->fetchAll();view('dashboard/customer',compact('orderCount','notifications'));}
+    public function vendor(): void {$u=require_role('vendor');$s=db()->prepare('SELECT COUNT(*) FROM services WHERE vendor_id=?');$s->execute([$u['id']]);$serviceCount=(int)$s->fetchColumn();$s=db()->prepare('SELECT o.*,u.name customer_name FROM orders o JOIN users u ON u.id=o.customer_id WHERE o.vendor_id=? ORDER BY o.created_at DESC LIMIT 20');$s->execute([$u['id']]);$orders=$s->fetchAll();view('dashboard/vendor',compact('serviceCount','orders'));}
+    public function admin(): void {require_role('admin');$stats=[];foreach(['users','services','orders','vendors_pending'=>null] as $table){if($table==='vendors_pending'){$stats[$table]=(int)db()->query("SELECT COUNT(*) FROM users WHERE role='vendor' AND status='pending'")->fetchColumn();}else{$stats[$table]=(int)db()->query("SELECT COUNT(*) FROM {$table}")->fetchColumn();}}$orders=db()->query('SELECT o.*,u.name customer_name,v.name vendor_name FROM orders o JOIN users u ON u.id=o.customer_id JOIN users v ON v.id=o.vendor_id ORDER BY o.created_at DESC LIMIT 15')->fetchAll();view('dashboard/admin',compact('stats','orders'));}
+    public function approveVendor(): void {require_role('admin');$id=(int)($_POST['vendor_id']??0);$status=($_POST['status']??'active')==='rejected'?'rejected':'active';db()->prepare("UPDATE users SET status=? WHERE id=? AND role='vendor'")->execute([$status,$id]);flash('success','Vendor status updated.');redirect('admin');}
+}

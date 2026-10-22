@@ -1,0 +1,1 @@
+<section class="auth-wrap"><div class="auth-card text-center"><div class="eyebrow">404 · PAGE NOT FOUND</div><h1>This page took a <em>detour.</em></h1><p>Let's get you back to the good stuff.</p><a class="btn btn-green" href="<?= e(url()) ?>">Back to PrintPack ↗</a></div></section>
